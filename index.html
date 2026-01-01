@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>🚦 Smart Bengaluru | Live Connect</title>
+<title>🚦 Smart Bengaluru Traffic Connect</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- Firebase -->
+<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
@@ -13,111 +13,87 @@
 *{box-sizing:border-box}
 body{
   margin:0;
-  font-family:"Segoe UI",sans-serif;
-  background:radial-gradient(circle at top,#1a237e,#0d102b);
-  color:white;
+  font-family:"Segoe UI",Arial;
+  background:linear-gradient(180deg,#eef2ff,#ffffff);
 }
 header{
-  padding:22px;
-  text-align:center;
-  font-size:26px;
-  font-weight:800;
-  background:rgba(255,255,255,.08);
-  backdrop-filter:blur(14px);
-}
-.screen{display:none;padding:18px}
-.active{display:block}
-
-.glass{
-  background:rgba(255,255,255,.12);
-  backdrop-filter:blur(16px);
-  border-radius:20px;
+  background:linear-gradient(90deg,#1a237e,#3949ab);
+  color:white;
   padding:18px;
-  margin-bottom:18px;
-  box-shadow:0 20px 40px rgba(0,0,0,.35);
-}
-
-.hero{
   text-align:center;
-  padding:30px;
-  border-radius:26px;
-  background:linear-gradient(135deg,#ff6f00,#ff9800);
-  color:#1a237e;
-  animation:pop .6s ease;
+  font-size:22px;
+  font-weight:800;
 }
-@keyframes pop{
-  from{transform:scale(.9);opacity:0}
-  to{transform:scale(1);opacity:1}
+.screen{display:none;padding:16px}
+.active{display:block}
+.card{
+  background:white;
+  padding:16px;
+  margin-bottom:14px;
+  border-radius:18px;
+  box-shadow:0 10px 25px rgba(26,35,126,.2);
 }
-.hero h1{margin:0;font-size:30px}
-.hero p{margin-top:8px;font-weight:600}
-
 .grid{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:16px;
+  gap:14px;
 }
 .tile{
+  background:linear-gradient(135deg,#303f9f,#7986cb);
+  color:white;
   padding:22px;
-  border-radius:22px;
+  border-radius:20px;
   text-align:center;
   font-weight:700;
   cursor:pointer;
-  background:linear-gradient(135deg,#3949ab,#1a237e);
   transition:.25s;
 }
-.tile:hover{transform:translateY(-6px) scale(1.03)}
-
+.tile:hover{transform:translateY(-5px)}
 button{
   width:100%;
   padding:14px;
+  margin-top:8px;
   border:none;
-  border-radius:14px;
-  background:#ff6f00;
-  color:#1a237e;
+  border-radius:12px;
+  background:#303f9f;
+  color:white;
   font-size:16px;
-  font-weight:700;
-  margin-top:10px;
+  font-weight:600;
 }
-.back{background:#777;color:white}
-
+.back{background:#555}
 input,select,textarea{
   width:100%;
-  padding:12px;
-  border-radius:12px;
-  border:none;
-  margin-bottom:10px;
+  padding:10px;
+  margin-bottom:8px;
+  border-radius:10px;
+  border:1px solid #ccc;
 }
-
 iframe{
   width:100%;
-  height:360px;
-  border-radius:16px;
-  border:none;
+  height:350px;
+  border:0;
+  border-radius:14px;
 }
-
 ul{padding-left:18px}
-li{margin-bottom:12px}
+li{margin-bottom:10px}
 small{opacity:.8}
-a{color:#ffeb3b;font-weight:bold;text-decoration:none}
 </style>
 </head>
 
 <body>
 
-<header>🚦 Smart Bengaluru – Live City Connect</header>
+<header>🚦 Smart Bengaluru Traffic Connect</header>
 
 <!-- HOME -->
 <div id="home" class="screen active">
-  <div class="hero">
-    <h1>Beat Traffic Together</h1>
-    <p>Live • Community • Smart City</p>
+  <div class="card">
+    <h2>Move Smart. Beat Traffic.</h2>
+    <p>Community-powered real-time city connect</p>
   </div>
-
-  <div class="glass">
+  <div class="card">
     <div class="grid">
-      <div class="tile" onclick="openScreen('map')">🗺️ Live Map</div>
-      <div class="tile" onclick="openScreen('road')">🚧 Road Alerts</div>
+      <div class="tile" onclick="openScreen('live')">📍 Live Traffic</div>
+      <div class="tile" onclick="openScreen('road')">🚧 Roadblocks</div>
       <div class="tile" onclick="openScreen('carpool')">🚗 Carpool</div>
       <div class="tile" onclick="openScreen('students')">🎓 Students</div>
       <div class="tile" onclick="openScreen('workers')">👷 Workers</div>
@@ -126,9 +102,9 @@ a{color:#ffeb3b;font-weight:bold;text-decoration:none}
   </div>
 </div>
 
-<!-- MAP -->
-<div id="map" class="screen">
-  <div class="glass">
+<!-- LIVE -->
+<div id="live" class="screen">
+  <div class="card">
     <h2>Live Traffic Map</h2>
     <iframe src="https://www.google.com/maps?q=bangalore&output=embed&layer=t"></iframe>
     <button class="back" onclick="openScreen('home')">Back</button>
@@ -137,22 +113,22 @@ a{color:#ffeb3b;font-weight:bold;text-decoration:none}
 
 <!-- ROADBLOCKS -->
 <div id="road" class="screen">
-  <div class="glass">
-    <h2>Report Road Issue</h2>
+  <div class="card">
+    <h2>Report Roadblock</h2>
     <input id="rb_loc" placeholder="Location">
     <select id="rb_type">
-      <option value="">Issue Type</option>
+      <option value="">Issue</option>
       <option>Accident</option>
       <option>Heavy Traffic</option>
-      <option>Road Closed</option>
       <option>Construction</option>
+      <option>Road Closed</option>
     </select>
     <textarea id="rb_det" placeholder="Details"></textarea>
     <button onclick="addRoad()">Submit</button>
   </div>
 
-  <div class="glass">
-    <h3>Live Alerts</h3>
+  <div class="card">
+    <h3>Live Roadblocks</h3>
     <ul id="roadList"></ul>
     <button class="back" onclick="openScreen('home')">Back</button>
   </div>
@@ -160,8 +136,8 @@ a{color:#ffeb3b;font-weight:bold;text-decoration:none}
 
 <!-- CARPOOL -->
 <div id="carpool" class="screen">
-  <div class="glass">
-    <h2>Offer a Ride</h2>
+  <div class="card">
+    <h2>Add Ride</h2>
     <input id="cf" placeholder="From">
     <input id="ct" placeholder="To">
     <input id="ctm" placeholder="Time">
@@ -170,7 +146,7 @@ a{color:#ffeb3b;font-weight:bold;text-decoration:none}
     <button onclick="addRide()">Add Ride</button>
   </div>
 
-  <div class="glass">
+  <div class="card">
     <h3>Available Rides</h3>
     <ul id="rideList"></ul>
     <button class="back" onclick="openScreen('home')">Back</button>
@@ -179,12 +155,12 @@ a{color:#ffeb3b;font-weight:bold;text-decoration:none}
 
 <!-- STUDENTS -->
 <div id="students" class="screen">
-  <div class="glass">
+  <div class="card">
     <h2>Student Mode</h2>
     <ul>
-      <li>📚 Leave early for exams</li>
-      <li>🚇 Prefer metro & buses</li>
-      <li>🚗 Share rides with friends</li>
+      <li>📚 Leave early</li>
+      <li>🚇 Use metro/bus</li>
+      <li>🚗 Share rides</li>
     </ul>
     <button class="back" onclick="openScreen('home')">Back</button>
   </div>
@@ -192,12 +168,12 @@ a{color:#ffeb3b;font-weight:bold;text-decoration:none}
 
 <!-- WORKERS -->
 <div id="workers" class="screen">
-  <div class="glass">
+  <div class="card">
     <h2>Worker Mode</h2>
     <ul>
-      <li>⏰ Check traffic before leaving</li>
-      <li>🛣️ Choose alternate routes</li>
-      <li>💰 Save fuel with carpool</li>
+      <li>⏰ Check traffic</li>
+      <li>🛣️ Alternate routes</li>
+      <li>💰 Save fuel</li>
     </ul>
     <button class="back" onclick="openScreen('home')">Back</button>
   </div>
@@ -205,9 +181,8 @@ a{color:#ffeb3b;font-weight:bold;text-decoration:none}
 
 <!-- HELP -->
 <div id="help" class="screen">
-  <div class="glass">
+  <div class="card">
     <h2>Emergency Help</h2>
-    <p>If immediate danger:</p>
     <a href="tel:112">📞 Call 112</a>
     <button class="back" onclick="openScreen('home')">Back</button>
   </div>
@@ -220,6 +195,7 @@ function openScreen(id){
   document.getElementById(id).classList.add("active");
 }
 
+/* Firebase config */
 const firebaseConfig = {
   apiKey: "AIzaSyCsj41lbq3IYgmxAa6cNUGTFpskCcVMRVU",
   authDomain: "smart-bengaluru-traffic.firebaseapp.com",
@@ -250,58 +226,58 @@ db.collection("roadblocks").orderBy("time","desc")
   s.forEach(d=>{
     let r=d.data();
     roadList.innerHTML+=`
-    <li>🚧 <b>${r.type}</b><br>
-    📍 ${r.location}<br>
+    <li><b>${r.type}</b> @ ${r.location}<br>
     ${r.details}<br>
     <small>${new Date(r.time.seconds*1000).toLocaleString()}</small></li>`;
   });
 });
 
-/* CARPOOL */
-function addRide(){
-  if(!cf.value||!ct.value||!ctm.value||!cs.value||!cc.value)
-    return alert("Fill all fields");
-  db.collection("carpool").add({
-    from:cf.value,to:ct.value,time:ctm.value,
-    seats:+cs.value,contact:cc.value
-  });
-  cf.value=ct.value=ctm.value=cs.value=cc.value="";
-}
+/* CARPOOL – FIXED & WORKING */
+document.addEventListener("DOMContentLoaded",()=>{
 
-function joinRide(id){
-  const rideRef = db.collection("carpool").doc(id);
+  window.addRide=function(){
+    if(!cf.value||!ct.value||!ctm.value||!cs.value||!cc.value)
+      return alert("Fill all details");
+    db.collection("carpool").add({
+      from:cf.value,
+      to:ct.value,
+      time:ctm.value,
+      seats:Number(cs.value),
+      contact:cc.value,
+      createdAt:new Date()
+    });
+    cf.value=ct.value=ctm.value=cs.value=cc.value="";
+  };
 
-  rideRef.get().then(doc => {
-    if (!doc.exists) return;
+  window.joinRide=function(id){
+    const ref=db.collection("carpool").doc(id);
+    ref.get().then(doc=>{
+      if(!doc.exists)return;
+      let seats=doc.data().seats;
+      if(seats<=0)return alert("No seats left");
+      ref.update({seats:seats-1});
+    });
+  };
 
-    const seats = doc.data().seats;
-    if (seats <= 0) {
-      alert("No seats left");
-      return;
-    }
-
-    rideRef.update({
-      seats: seats - 1
+  db.collection("carpool").orderBy("createdAt","desc")
+  .onSnapshot(s=>{
+    rideList.innerHTML="";
+    s.forEach(d=>{
+      let r=d.data();
+      rideList.innerHTML+=`
+      <li>${r.from} ➝ ${r.to}<br>
+      🕒 ${r.time} | Seats: ${r.seats}<br>
+      📞 ${r.contact}<br>
+      ${
+        r.seats>0
+        ? `<button onclick="joinRide('${d.id}')">Join</button>`
+        : `<small>❌ No seats left</small>`
+      }</li>`;
     });
   });
-}
-  
-db.collection("carpool").onSnapshot(s=>{
-  rideList.innerHTML="";
-  s.forEach(d=>{
-    let r=d.data();
-    rideList.innerHTML+=`
-    <li>🚗 ${r.from} ➝ ${r.to}<br>
-    🕒 ${r.time} | Seats: ${r.seats}<br>
-    📞 ${r.contact}
-   ${r.seats > 0 
-  ? `<button onclick="joinRide('${d.id}')">Join</button>` 
-  : `<small>❌ No seats left</small>`
-}</li>`;
-  });
+
 });
 </script>
 
 </body>
 </html>
-
