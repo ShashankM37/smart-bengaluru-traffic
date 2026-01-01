@@ -20,6 +20,45 @@
   // Firestore reference
   const db = firebase.firestore();
 </script>
+<script>
+  const rb_loc = document.getElementById("rb_loc");
+  const rb_type = document.getElementById("rb_type");
+  const rb_det = document.getElementById("rb_det");
+  const rlist  = document.getElementById("rlist");
+
+  function submitReport() {
+    if (!rb_loc.value || !rb_type.value) {
+      alert("Enter location and type");
+      return;
+    }
+
+    db.collection("roadblocks").add({
+      location: rb_loc.value,
+      type: rb_type.value,
+      details: rb_det.value,
+      time: new Date().toLocaleString()
+    });
+
+    rb_loc.value = "";
+    rb_type.value = "";
+    rb_det.value = "";
+  }
+
+  db.collection("roadblocks")
+    .onSnapshot(snapshot => {
+      rlist.innerHTML = "";
+      snapshot.forEach(doc => {
+        const d = doc.data();
+        rlist.innerHTML += `
+          <li>
+            <b>${d.type}</b> @ ${d.location}<br>
+            ${d.details}<br>
+            <small>${d.time}</small>
+          </li>
+        `;
+      });
+    });
+</script>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -292,6 +331,14 @@ window.onload=()=>{showReports();showRides();}
 <button class="back" onclick="openScreen('home')">Back</button>
 </div>
 </div>
+  <!-- Roadblock input -->
+<input id="rb_loc" placeholder="Location (e.g. MG Road)">
+<input id="rb_type" placeholder="Type (Traffic / Accident)">
+<textarea id="rb_det" placeholder="Details"></textarea>
+<button onclick="submitReport()">Report</button>
+
+<!-- Roadblock list -->
+<ul id="rlist"></ul>
 
 <!-- CARPOOL -->
 <div id="carpool" class="screen">
@@ -335,9 +382,9 @@ window.onload=()=>{showReports();showRides();}
 
 </html>
 <script>
-  db.collection("test").add({
     status: "Firebase connected",
     time: new Date().toString()
   });
 </script>
+
 
