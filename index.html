@@ -2,32 +2,79 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Smart Bengaluru Traffic Connect</title>
+<title>🚦 Smart Bengaluru Traffic Connect</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- Firebase SDKs -->
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
 <style>
-:root{--p:#1a237e;--a:#ff6f00}
+:root{
+  --p:#1a237e;
+  --a:#ff6f00;
+}
 *{box-sizing:border-box}
-body{margin:0;font-family:system-ui,Arial;background:#eef2ff}
-header{background:linear-gradient(90deg,#1a237e,#3949ab);color:#fff;
-padding:16px;text-align:center;font-size:22px;font-weight:700}
+body{
+  margin:0;
+  font-family:system-ui, Arial;
+  background:linear-gradient(180deg,#eef2ff,#ffffff);
+}
+header{
+  background:linear-gradient(90deg,#1a237e,#3949ab);
+  color:white;
+  padding:18px;
+  text-align:center;
+  font-size:22px;
+  font-weight:700;
+}
 .screen{display:none;padding:16px}
 .active{display:block}
-.card{background:#fff;padding:16px;margin-bottom:14px;border-radius:16px;
-box-shadow:0 10px 25px rgba(26,35,126,.18)}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.tile{background:linear-gradient(135deg,#303f9f,#7986cb);color:#fff;
-padding:20px;border-radius:18px;text-align:center;font-weight:600;cursor:pointer}
-button{width:100%;padding:14px;border:none;border-radius:12px;
-background:#303f9f;color:#fff;font-size:16px;margin-top:6px}
+.card{
+  background:white;
+  padding:16px;
+  margin-bottom:14px;
+  border-radius:18px;
+  box-shadow:0 10px 25px rgba(26,35,126,.2);
+}
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+.tile{
+  background:linear-gradient(135deg,#303f9f,#7986cb);
+  color:white;
+  padding:20px;
+  border-radius:18px;
+  text-align:center;
+  font-weight:600;
+  cursor:pointer;
+}
+button{
+  width:100%;
+  padding:14px;
+  margin-top:8px;
+  border:none;
+  border-radius:12px;
+  background:#303f9f;
+  color:white;
+  font-size:16px;
+}
 .back{background:#555}
-input,select,textarea{width:100%;padding:10px;margin-bottom:8px;
-border-radius:10px;border:1px solid #ccc}
-iframe{width:100%;height:360px;border:0;border-radius:14px}
+input,select,textarea{
+  width:100%;
+  padding:10px;
+  margin-bottom:8px;
+  border-radius:10px;
+  border:1px solid #ccc;
+}
+iframe{
+  width:100%;
+  height:350px;
+  border:0;
+  border-radius:14px;
+}
 ul{padding-left:18px}
 </style>
 </head>
@@ -40,106 +87,104 @@ ul{padding-left:18px}
 <div id="home" class="screen active">
   <div class="card">
     <h2>Move Smart. Beat Traffic.</h2>
+    <p>Live reports • Community driven • Real-time</p>
+  </div>
+  <div class="card">
     <div class="grid">
       <div class="tile" onclick="openScreen('live')">📍 Live Traffic</div>
       <div class="tile" onclick="openScreen('road')">🚧 Roadblocks</div>
       <div class="tile" onclick="openScreen('carpool')">🚗 Carpool</div>
       <div class="tile" onclick="openScreen('students')">🎓 Students</div>
       <div class="tile" onclick="openScreen('workers')">👷 Workers</div>
-      <div class="tile" onclick="openScreen('solutions')">💡 Solutions</div>
+      <div class="tile" onclick="openScreen('help')">🆘 Emergency</div>
     </div>
   </div>
 </div>
 
 <!-- LIVE -->
 <div id="live" class="screen">
-<div class="card">
-<h2>Live Traffic</h2>
-<iframe src="https://www.google.com/maps?q=bangalore&output=embed&layer=t"></iframe>
-<button class="back" onclick="openScreen('home')">Back</button>
-</div>
+  <div class="card">
+    <h2>Live Traffic</h2>
+    <iframe src="https://www.google.com/maps?q=bangalore&output=embed&layer=t"></iframe>
+    <button class="back" onclick="openScreen('home')">Back</button>
+  </div>
 </div>
 
 <!-- ROADBLOCKS -->
 <div id="road" class="screen">
-<div class="card">
-<h2>Report Roadblock</h2>
-<input id="rb_loc" placeholder="Location">
-<select id="rb_type">
-<option value="">Issue</option>
-<option>Accident</option>
-<option>Heavy Traffic</option>
-<option>Construction</option>
-<option>Road Closed</option>
-</select>
-<textarea id="rb_det" placeholder="Details"></textarea>
-<button onclick="submitReport()">Submit</button>
-</div>
+  <div class="card">
+    <h2>Report Roadblock</h2>
+    <input id="rb_loc" placeholder="Location (MG Road)">
+    <select id="rb_type">
+      <option value="">Issue type</option>
+      <option>Accident</option>
+      <option>Heavy Traffic</option>
+      <option>Construction</option>
+      <option>Road Closed</option>
+    </select>
+    <textarea id="rb_det" placeholder="Details"></textarea>
+    <button onclick="submitRoad()">Submit</button>
+  </div>
 
-<div class="card">
-<h3>Live Roadblocks</h3>
-<ul id="rlist"></ul>
-<button class="back" onclick="openScreen('home')">Back</button>
-</div>
+  <div class="card">
+    <h3>Live Roadblocks</h3>
+    <ul id="roadList"></ul>
+    <button class="back" onclick="openScreen('home')">Back</button>
+  </div>
 </div>
 
 <!-- CARPOOL -->
 <div id="carpool" class="screen">
-<div class="card">
-<h2>Add Ride</h2>
-<input id="cf" placeholder="From">
-<input id="ct" placeholder="To">
-<input id="ctm" placeholder="Time">
-<input id="cs" type="number" placeholder="Seats">
-<input id="cc" placeholder="Contact">
-<button onclick="addRide()">Add Ride</button>
-</div>
+  <div class="card">
+    <h2>Add Carpool Ride</h2>
+    <input id="cf" placeholder="From">
+    <input id="ct" placeholder="To">
+    <input id="ctm" placeholder="Time">
+    <input id="cs" type="number" placeholder="Seats">
+    <input id="cc" placeholder="Contact">
+    <button onclick="addRide()">Add Ride</button>
+  </div>
 
-<div class="card">
-<h3>Available Rides</h3>
-<ul id="rideList"></ul>
-<button class="back" onclick="openScreen('home')">Back</button>
-</div>
+  <div class="card">
+    <h3>Available Rides</h3>
+    <ul id="rideList"></ul>
+    <button class="back" onclick="openScreen('home')">Back</button>
+  </div>
 </div>
 
 <!-- STUDENTS -->
 <div id="students" class="screen">
-<div class="card">
-<h2>Student Mode</h2>
-<ul>
-<li>Travel early</li>
-<li>Use public transport</li>
-<li>Share rides</li>
-</ul>
-<button class="back" onclick="openScreen('home')">Back</button>
-</div>
+  <div class="card">
+    <h2>Student Mode</h2>
+    <ul>
+      <li>Travel early</li>
+      <li>Use metro/bus</li>
+      <li>Share rides</li>
+    </ul>
+    <button class="back" onclick="openScreen('home')">Back</button>
+  </div>
 </div>
 
 <!-- WORKERS -->
 <div id="workers" class="screen">
-<div class="card">
-<h2>Worker Mode</h2>
-<ul>
-<li>Check traffic</li>
-<li>Alternate routes</li>
-<li>Save fuel</li>
-</ul>
-<button class="back" onclick="openScreen('home')">Back</button>
-</div>
+  <div class="card">
+    <h2>Worker Mode</h2>
+    <ul>
+      <li>Check live traffic</li>
+      <li>Use alternate routes</li>
+      <li>Save fuel with carpool</li>
+    </ul>
+    <button class="back" onclick="openScreen('home')">Back</button>
+  </div>
 </div>
 
-<!-- SOLUTIONS -->
-<div id="solutions" class="screen">
-<div class="card">
-<h2>Smart Solutions</h2>
-<ul>
-<li>Adaptive signals</li>
-<li>Public transport</li>
-<li>Ride sharing</li>
-<li>WFH</li>
-</ul>
-<button class="back" onclick="openScreen('home')">Back</button>
-</div>
+<!-- HELP -->
+<div id="help" class="screen">
+  <div class="card">
+    <h2>Emergency Help</h2>
+    <a href="tel:112">📞 Call 112</a>
+    <button class="back" onclick="openScreen('home')">Back</button>
+  </div>
 </div>
 
 <!-- FIREBASE + LOGIC -->
@@ -149,66 +194,67 @@ function openScreen(id){
   document.getElementById(id).classList.add("active");
 }
 
-/* Firebase config (YOUR REAL ONE) */
 const firebaseConfig = {
   apiKey: "AIzaSyCsj41lbq3IYgmxAa6cNUGTFpskCcVMRVU",
   authDomain: "smart-bengaluru-traffic.firebaseapp.com",
   projectId: "smart-bengaluru-traffic",
   storageBucket: "smart-bengaluru-traffic.firebasestorage.app",
   messagingSenderId: "739403912516",
-  appId: "1:739403912516:web:3939c444fd239de4b3b311"
+  appId: "1:739403912516:web:XXXX"
 };
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
 /* ROADBLOCKS */
-function submitReport(){
+function submitRoad(){
+  if(!rb_loc.value||!rb_type.value) return alert("Fill required");
   db.collection("roadblocks").add({
-    location: rb_loc.value,
-    type: rb_type.value,
-    details: rb_det.value,
-    time: new Date()
+    location:rb_loc.value,
+    type:rb_type.value,
+    details:rb_det.value,
+    time:new Date()
   });
-  rb_loc.value = rb_type.value = rb_det.value = "";
+  rb_loc.value=rb_type.value=rb_det.value="";
 }
 
 db.collection("roadblocks").orderBy("time","desc")
-.onSnapshot(snap=>{
-  rlist.innerHTML="";
-  snap.forEach(doc=>{
-    let d=doc.data();
-    rlist.innerHTML+=`<li><b>${d.type}</b> @ ${d.location}<br>
-    ${d.details}<br><small>${d.time.toDate().toLocaleString()}</small></li>`;
+.onSnapshot(s=>{
+  roadList.innerHTML="";
+  s.forEach(d=>{
+    let r=d.data();
+    roadList.innerHTML+=`
+    <li><b>${r.type}</b> @ ${r.location}<br>
+    ${r.details}<br>
+    <small>${new Date(r.time.seconds*1000).toLocaleString()}</small></li>`;
   });
 });
 
 /* CARPOOL */
 function addRide(){
+  if(!cf.value||!ct.value||!ctm.value||!cs.value||!cc.value)
+    return alert("Fill all fields");
   db.collection("carpool").add({
-    from: cf.value,
-    to: ct.value,
-    time: ctm.value,
-    seats: Number(cs.value),
-    contact: cc.value
+    from:cf.value,to:ct.value,time:ctm.value,
+    seats:+cs.value,contact:cc.value
   });
   cf.value=ct.value=ctm.value=cs.value=cc.value="";
 }
 
 function joinRide(id,seats){
-  if(seats<=0){alert("No seats");return;}
+  if(seats<=0) return alert("No seats");
   db.collection("carpool").doc(id).update({seats:seats-1});
 }
 
-db.collection("carpool").onSnapshot(snap=>{
+db.collection("carpool").onSnapshot(s=>{
   rideList.innerHTML="";
-  snap.forEach(doc=>{
-    let r=doc.data();
+  s.forEach(d=>{
+    let r=d.data();
     rideList.innerHTML+=`
     <li>${r.from} ➝ ${r.to}<br>
-    Time: ${r.time} | Seats: ${r.seats}<br>
+    🕒 ${r.time} | Seats: ${r.seats}<br>
     📞 ${r.contact}
-    <button onclick="joinRide('${doc.id}',${r.seats})">Join</button></li>`;
+    <button onclick="joinRide('${d.id}',${r.seats})">Join</button></li>`;
   });
 });
 </script>
