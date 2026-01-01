@@ -1,3 +1,25 @@
+<!-- Firebase SDK (COMPAT version for normal HTML) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<script>
+  // 🔽 Paste your firebaseConfig here
+  const firebaseConfig = {
+    apiKey: "",
+    authDomain: "smart-bengaluru-traffic.firebaseapp.com",
+    projectId: "smart-bengaluru-traffic",
+    storageBucket: "smart-bengaluru-traffic.firebasestorage.app",
+    messagingSenderId: "739403912516",
+    appId: "1:739403912516:web:....",
+    measurementId: "G-7SC9FBEP6T"
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+
+  // Firestore reference
+  const db = firebase.firestore();
+</script>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -310,4 +332,11 @@ window.onload=()=>{showReports();showRides();}
 </div>
 
 </body>
+
 </html>
+<script>
+  db.collection("test").add({
+    status: "Firebase connected",
+    time: new Date().toString()
+  });
+</script>
