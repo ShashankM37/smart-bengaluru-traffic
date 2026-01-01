@@ -9,56 +9,57 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
-<!-- Google Font -->
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
-
 <style>
+:root{
+  --primary:#1a237e;
+  --accent:#ff6f00;
+}
 *{box-sizing:border-box}
 body{
   margin:0;
-  font-family:'Poppins',sans-serif;
-  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-  color:white;
+  font-family:system-ui,Arial;
+  background:linear-gradient(180deg,#eef2ff,#ffffff);
 }
 header{
-  padding:20px;
+  background:linear-gradient(90deg,#1a237e,#3949ab);
+  color:#fff;
+  padding:16px;
   text-align:center;
-  font-size:26px;
+  font-size:22px;
   font-weight:700;
-  background:rgba(0,0,0,.35);
-  backdrop-filter:blur(10px);
 }
-.screen{display:none;padding:18px}
+.screen{display:none;padding:16px}
 .active{display:block}
 .card{
-  background:rgba(255,255,255,.12);
-  backdrop-filter:blur(14px);
-  border-radius:20px;
-  padding:18px;
-  margin-bottom:16px;
-  box-shadow:0 10px 40px rgba(0,0,0,.4);
+  background:#fff;
+  padding:16px;
+  border-radius:18px;
+  box-shadow:0 12px 30px rgba(0,0,0,.15);
+  margin-bottom:14px;
+  animation:fade .5s ease;
 }
-h2{margin-top:0}
-button{
-  width:100%;
-  padding:14px;
-  border:none;
-  border-radius:14px;
-  background:linear-gradient(135deg,#ff512f,#dd2476);
-  color:white;
-  font-size:16px;
-  font-weight:600;
-  margin-top:10px;
-  cursor:pointer;
+@keyframes fade{
+  from{opacity:0;transform:translateY(10px)}
+  to{opacity:1;transform:none}
 }
-.back{background:linear-gradient(135deg,#555,#222)}
-input,select,textarea{
-  width:100%;
-  padding:12px;
-  margin-bottom:10px;
-  border-radius:12px;
-  border:none;
-  outline:none;
+.hero{
+  background:linear-gradient(135deg,#1a237e,#5c6bc0);
+  color:#fff;
+  padding:30px;
+  border-radius:24px;
+  text-align:center;
+}
+.hero span{
+  display:inline-block;
+  margin-top:12px;
+  padding:8px 18px;
+  background:#ff6f00;
+  border-radius:999px;
+  animation:pulse 2s infinite;
+}
+@keyframes pulse{
+  0%{box-shadow:0 0 0 0 rgba(255,111,0,.6)}
+  70%{box-shadow:0 0 0 18px rgba(255,111,0,0)}
 }
 .grid{
   display:grid;
@@ -66,19 +67,38 @@ input,select,textarea{
   gap:14px;
 }
 .tile{
-  background:linear-gradient(135deg,#00c6ff,#0072ff);
-  padding:26px;
-  border-radius:22px;
+  background:linear-gradient(135deg,#303f9f,#7986cb);
+  color:#fff;
+  padding:22px;
+  border-radius:20px;
   text-align:center;
-  font-size:18px;
-  font-weight:700;
+  font-weight:600;
   cursor:pointer;
-  transition:transform .3s;
 }
-.tile:hover{transform:scale(1.07)}
-ul{padding-left:18px}
-iframe{border-radius:18px}
-small{opacity:.7}
+button{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:14px;
+  background:#303f9f;
+  color:#fff;
+  font-size:16px;
+}
+.back{background:#555}
+input,select,textarea{
+  width:100%;
+  padding:10px;
+  margin-bottom:8px;
+  border-radius:10px;
+  border:1px solid #ccc;
+}
+iframe{
+  width:100%;
+  height:360px;
+  border-radius:16px;
+  border:none;
+}
+ul{padding-left:16px}
 </style>
 </head>
 
@@ -88,48 +108,48 @@ small{opacity:.7}
 
 <!-- HOME -->
 <div id="home" class="screen active">
-  <div class="card">
-    <h2>Move Smart. Beat Traffic.</h2>
-    <p>Live updates • Citizens connect • Smart rides</p>
+  <div class="hero">
+    <h1>Move Smart. Beat Traffic.</h1>
+    <p>Citizen-powered live traffic & carpooling</p>
+    <span>SMART CITY MODE</span>
   </div>
 
-  <div class="grid">
-    <div class="tile" onclick="openScreen('live')">📍 Live Traffic</div>
-    <div class="tile" onclick="openScreen('road')">🚧 Roadblocks</div>
-    <div class="tile" onclick="openScreen('carpool')">🚗 Carpool</div>
-    <div class="tile" onclick="openScreen('students')">🎓 Students</div>
-    <div class="tile" onclick="openScreen('workers')">👷 Workers</div>
-    <div class="tile" onclick="openScreen('help')">🆘 Emergency</div>
+  <div class="card">
+    <div class="grid">
+      <div class="tile" onclick="openScreen('map')">🗺 Live Map</div>
+      <div class="tile" onclick="openScreen('road')">🚧 Roadblocks</div>
+      <div class="tile" onclick="openScreen('carpool')">🚗 Carpool</div>
+      <div class="tile" onclick="openScreen('students')">🎓 Students</div>
+      <div class="tile" onclick="openScreen('workers')">👷 Workers</div>
+      <div class="tile" onclick="openScreen('help')">🆘 Emergency</div>
+    </div>
   </div>
 </div>
 
-<!-- LIVE -->
-<div id="live" class="screen">
+<!-- MAP -->
+<div id="map" class="screen">
 <div class="card">
-<h2>Live Traffic</h2>
-<iframe width="100%" height="320"
-src="https://www.google.com/maps?q=bangalore&output=embed"></iframe>
+<h2>Live Traffic Map</h2>
+<iframe src="https://www.google.com/maps?q=bangalore&output=embed&layer=t"></iframe>
 <button class="back" onclick="openScreen('home')">Back</button>
 </div>
 </div>
 
-<!-- ROADBLOCKS -->
+<!-- ROADBLOCK -->
 <div id="road" class="screen">
 <div class="card">
 <h2>Report Roadblock</h2>
 <input id="rb_loc" placeholder="Location">
 <select id="rb_type">
+<option value="">Issue</option>
 <option>Accident</option>
-<option>Heavy Traffic</option>
+<option>Roadblock</option>
 <option>Construction</option>
+<option>Heavy Traffic</option>
 </select>
 <textarea id="rb_det" placeholder="Details"></textarea>
-<button onclick="addRoadblock()">Submit</button>
-</div>
-
-<div class="card">
-<h2>Live Reports</h2>
-<ul id="roadList"></ul>
+<button onclick="submitRoadblock()">Submit</button>
+<ul id="rlist"></ul>
 <button class="back" onclick="openScreen('home')">Back</button>
 </div>
 </div>
@@ -137,17 +157,18 @@ src="https://www.google.com/maps?q=bangalore&output=embed"></iframe>
 <!-- CARPOOL -->
 <div id="carpool" class="screen">
 <div class="card">
-<h2>Host Ride (Host Only)</h2>
-<input id="hostPin" placeholder="Host PIN">
-<input id="from" placeholder="From">
-<input id="to" placeholder="To">
-<input id="time" placeholder="Time">
-<input id="seats" type="number" placeholder="Seats">
+<h2>Host Add Ride</h2>
+<input id="host_pin" placeholder="Host PIN">
+<input id="cf" placeholder="From">
+<input id="ct" placeholder="To">
+<input id="ctm" placeholder="Time">
+<input id="cs" type="number" placeholder="Seats">
+<input id="cc" placeholder="Host Contact">
 <button onclick="addRide()">Add Ride</button>
 </div>
 
 <div class="card">
-<h2>Join Ride</h2>
+<h2>Available Rides</h2>
 <ul id="rideList"></ul>
 <button class="back" onclick="openScreen('home')">Back</button>
 </div>
@@ -156,11 +177,11 @@ src="https://www.google.com/maps?q=bangalore&output=embed"></iframe>
 <!-- STUDENTS -->
 <div id="students" class="screen">
 <div class="card">
-<h2>Student Mode</h2>
+<h2>Student Tips</h2>
 <ul>
-<li>Metro & BMTC</li>
-<li>Carpool</li>
 <li>Travel early</li>
+<li>Use Metro</li>
+<li>Share rides</li>
 </ul>
 <button class="back" onclick="openScreen('home')">Back</button>
 </div>
@@ -169,11 +190,11 @@ src="https://www.google.com/maps?q=bangalore&output=embed"></iframe>
 <!-- WORKERS -->
 <div id="workers" class="screen">
 <div class="card">
-<h2>Worker Mode</h2>
+<h2>Worker Tips</h2>
 <ul>
+<li>WFH when possible</li>
 <li>Avoid peak hours</li>
-<li>Alternate routes</li>
-<li>WFH if possible</li>
+<li>Use carpool</li>
 </ul>
 <button class="back" onclick="openScreen('home')">Back</button>
 </div>
@@ -183,18 +204,18 @@ src="https://www.google.com/maps?q=bangalore&output=embed"></iframe>
 <div id="help" class="screen">
 <div class="card">
 <h2>Emergency</h2>
-<a href="tel:112"><button>📞 Call 112</button></a>
+<a href="tel:112">📞 Call 112</a>
 <button class="back" onclick="openScreen('home')">Back</button>
 </div>
 </div>
 
 <script>
 function openScreen(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
 }
 
-/* 🔥 FIREBASE CONFIG – REPLACE WITH YOUR KEYS */
+// 🔥 FIREBASE CONFIG (replace with yours)
 firebase.initializeApp({
   apiKey: "YOUR_API_KEY",
   authDomain: "YOUR_PROJECT.firebaseapp.com",
@@ -203,7 +224,7 @@ firebase.initializeApp({
 const db = firebase.firestore();
 
 /* ROADBLOCKS */
-function addRoadblock(){
+function submitRoadblock(){
   db.collection("roadblocks").add({
     location: rb_loc.value,
     type: rb_type.value,
@@ -212,34 +233,40 @@ function addRoadblock(){
   });
 }
 
-db.collection("roadblocks").orderBy("time","desc").onSnapshot(s=>{
-  roadList.innerHTML="";
-  s.forEach(d=>{
-    let r=d.data();
-    roadList.innerHTML+=`
-    <li><b>${r.type}</b> @ ${r.location}<br>
-    ${r.details}<br><small>${r.time}</small></li>`;
+db.collection("roadblocks").onSnapshot(snap=>{
+  rlist.innerHTML="";
+  snap.forEach(doc=>{
+    const d=doc.data();
+    rlist.innerHTML+=`<li><b>${d.type}</b> @ ${d.location}<br>${d.details}<br><small>${d.time}</small></li>`;
   });
 });
 
 /* CARPOOL */
 function addRide(){
+  if(host_pin.value!=="1234"){alert("Invalid PIN");return;}
   db.collection("carpool").add({
-    hostPin: hostPin.value,
-    from: from.value,
-    to: to.value,
-    time: time.value,
-    seats: seats.value
+    from:cf.value,to:ct.value,time:ctm.value,
+    seats:+cs.value,host:cc.value,joiners:[]
   });
 }
 
-db.collection("carpool").onSnapshot(s=>{
+function joinRide(id,seats,joiners){
+  if(seats<=0)return alert("No seats");
+  const name=prompt("Name"),phone=prompt("Phone"),pickup=prompt("Pickup");
+  db.collection("carpool").doc(id).update({
+    seats:seats-1,
+    joiners:[...joiners,{name,phone,pickup}]
+  });
+}
+
+db.collection("carpool").onSnapshot(snap=>{
   rideList.innerHTML="";
-  s.forEach(d=>{
-    let r=d.data();
+  snap.forEach(doc=>{
+    const r=doc.data();
     rideList.innerHTML+=`
-    <li><b>${r.from}</b> ➝ ${r.to}<br>
-    ⏰ ${r.time} | Seats: ${r.seats}</li>`;
+    <li><b>${r.from} ➝ ${r.to}</b><br>
+    Time:${r.time}<br>Seats:${r.seats}<br>
+    <button onclick="joinRide('${doc.id}',${r.seats},${JSON.stringify(r.joiners)})">Join</button></li>`;
   });
 });
 </script>
