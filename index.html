@@ -57,7 +57,10 @@ header{
   font-weight:700;
   cursor:pointer;
   background:linear-gradient(135deg,#3949ab,#1a237e);
+  transition:.3s;
 }
+.tile:hover{transform:translateY(-6px) scale(1.05)}
+
 button{
   width:100%;
   padding:14px;
@@ -80,13 +83,14 @@ input,select,textarea{
 }
 iframe{
   width:100%;
-  height:350px;
+  height:360px;
   border:none;
   border-radius:18px;
 }
 ul{padding-left:18px}
 li{margin-bottom:14px}
 small{opacity:.8}
+a{color:#ffeb3b;font-weight:700;text-decoration:none}
 </style>
 </head>
 
@@ -103,9 +107,12 @@ small{opacity:.8}
 
   <div class="card">
     <div class="grid">
-      <div class="tile" onclick="openScreen('map')">🗺️ Live Map</div>
+      <div class="tile" onclick="openScreen('map')">🗺️ Live Traffic</div>
       <div class="tile" onclick="openScreen('road')">🚧 Roadblocks</div>
       <div class="tile" onclick="openScreen('carpool')">🚗 Carpool</div>
+      <div class="tile" onclick="openScreen('students')">🎓 Students</div>
+      <div class="tile" onclick="openScreen('workers')">👷 Workers</div>
+      <div class="tile" onclick="openScreen('help')">🆘 Emergency</div>
     </div>
   </div>
 </div>
@@ -113,7 +120,7 @@ small{opacity:.8}
 <!-- MAP -->
 <div id="map" class="screen">
   <div class="card">
-    <h2>Live Traffic</h2>
+    <h2>Live Traffic Map</h2>
     <iframe src="https://www.google.com/maps?q=bangalore&output=embed&layer=t"></iframe>
     <button class="back" onclick="openScreen('home')">Back</button>
   </div>
@@ -143,8 +150,6 @@ small{opacity:.8}
 
 <!-- CARPOOL -->
 <div id="carpool" class="screen">
-
-  <!-- HOST ADD RIDE -->
   <div class="card">
     <h2>Host – Add Ride</h2>
     <input id="host_pin" placeholder="Host PIN">
@@ -157,7 +162,6 @@ small{opacity:.8}
     <small>Only host can add rides</small>
   </div>
 
-  <!-- JOIN FORM -->
   <div class="card">
     <h3>Join Ride</h3>
     <input id="jn_name" placeholder="Your Name">
@@ -172,6 +176,41 @@ small{opacity:.8}
   </div>
 </div>
 
+<!-- STUDENTS -->
+<div id="students" class="screen">
+  <div class="card">
+    <h2>Student Mode</h2>
+    <ul>
+      <li>📚 Leave early for exams</li>
+      <li>🚇 Prefer metro and buses</li>
+      <li>🚗 Share rides with friends</li>
+    </ul>
+    <button class="back" onclick="openScreen('home')">Back</button>
+  </div>
+</div>
+
+<!-- WORKERS -->
+<div id="workers" class="screen">
+  <div class="card">
+    <h2>Worker Mode</h2>
+    <ul>
+      <li>⏰ Check traffic before leaving</li>
+      <li>🛣️ Use alternate routes</li>
+      <li>💰 Save fuel using carpool</li>
+    </ul>
+    <button class="back" onclick="openScreen('home')">Back</button>
+  </div>
+</div>
+
+<!-- HELP -->
+<div id="help" class="screen">
+  <div class="card">
+    <h2>Emergency Help</h2>
+    <a href="tel:112">📞 Call 112</a>
+    <button class="back" onclick="openScreen('home')">Back</button>
+  </div>
+</div>
+
 <!-- LOGIC -->
 <script>
 function openScreen(id){
@@ -179,15 +218,14 @@ function openScreen(id){
   document.getElementById(id).classList.add("active");
 }
 
-/* 🔐 CHANGE HOST PIN HERE */
-const HOST_PIN = "1234";
+const HOST_PIN = "2356";
 
-/* Firebase config */
 const firebaseConfig = {
-  apiKey: "AIzaSyCsj41lbq3IYgmxAa6cNUGTFpskCcVMRVU",
-  authDomain: "smart-bengaluru-traffic.firebaseapp.com",
-  projectId: "smart-bengaluru-traffic"
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT"
 };
+
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
@@ -213,13 +251,9 @@ db.collection("roadblocks").onSnapshot(s=>{
 
 /* HOST ADD RIDE */
 function addRide(){
-  if(host_pin.value !== HOST_PIN){
-    alert("Invalid Host PIN");
-    return;
-  }
+  if(host_pin.value !== HOST_PIN) return alert("Invalid Host PIN");
   if(!cf.value||!ct.value||!ctm.value||!cs.value||!cc.value)
     return alert("Fill all fields");
-
   db.collection("carpool").add({
     from:cf.value,to:ct.value,time:ctm.value,
     seats:Number(cs.value),
@@ -231,17 +265,18 @@ function addRide(){
 
 /* JOIN RIDE */
 function joinRide(id){
-  const name=jn_name.value, phone=jn_phone.value, pickup=jn_pickup.value;
-  if(!name||!phone) return alert("Enter your details");
-
+  if(!jn_name.value||!jn_phone.value)
+    return alert("Enter your details");
   const ref=db.collection("carpool").doc(id);
   ref.get().then(doc=>{
     const d=doc.data();
     if(d.seats<=0) return alert("Ride full");
-
-    d.joiners.push({name,phone,pickup});
+    d.joiners.push({
+      name:jn_name.value,
+      phone:jn_phone.value,
+      pickup:jn_pickup.value
+    });
     ref.update({seats:d.seats-1,joiners:d.joiners});
-
     jn_name.value=jn_phone.value=jn_pickup.value="";
   });
 }
@@ -252,8 +287,9 @@ db.collection("carpool").onSnapshot(s=>{
   s.forEach(d=>{
     const r=d.data();
     let j="";
-    r.joiners.forEach(x=>j+=`<li>${x.name} (${x.phone}) – ${x.pickup}</li>`);
-
+    r.joiners.forEach(x=>{
+      j+=`<li>${x.name} (${x.phone}) – ${x.pickup}</li>`;
+    });
     rideList.innerHTML+=`
       <li>
         🚗 ${r.from} ➝ ${r.to}<br>
