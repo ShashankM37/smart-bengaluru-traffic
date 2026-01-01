@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>🚦 Smart Bengaluru | City Connect</title>
+<title>🚦 Smart Bengaluru – City Connect</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- Firebase -->
+<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
@@ -13,7 +13,7 @@
 *{box-sizing:border-box}
 body{
   margin:0;
-  font-family:"Segoe UI",sans-serif;
+  font-family:"Segoe UI",Arial,sans-serif;
   background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
   color:white;
 }
@@ -44,7 +44,6 @@ header{
   padding:34px;
   text-align:center;
 }
-
 .grid{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -132,7 +131,7 @@ a{color:#ffeb3b;font-weight:700;text-decoration:none}
     <h2>Report Roadblock</h2>
     <input id="rb_loc" placeholder="Location">
     <select id="rb_type">
-      <option value="">Issue</option>
+      <option value="">Issue Type</option>
       <option>Accident</option>
       <option>Traffic</option>
       <option>Construction</option>
@@ -150,6 +149,7 @@ a{color:#ffeb3b;font-weight:700;text-decoration:none}
 
 <!-- CARPOOL -->
 <div id="carpool" class="screen">
+
   <div class="card">
     <h2>Host – Add Ride</h2>
     <input id="host_pin" placeholder="Host PIN">
@@ -182,8 +182,8 @@ a{color:#ffeb3b;font-weight:700;text-decoration:none}
     <h2>Student Mode</h2>
     <ul>
       <li>📚 Leave early for exams</li>
-      <li>🚇 Prefer metro and buses</li>
-      <li>🚗 Share rides with friends</li>
+      <li>🚇 Use metro & buses</li>
+      <li>🚗 Share rides</li>
     </ul>
     <button class="back" onclick="openScreen('home')">Back</button>
   </div>
@@ -194,9 +194,9 @@ a{color:#ffeb3b;font-weight:700;text-decoration:none}
   <div class="card">
     <h2>Worker Mode</h2>
     <ul>
-      <li>⏰ Check traffic before leaving</li>
+      <li>⏰ Check traffic early</li>
       <li>🛣️ Use alternate routes</li>
-      <li>💰 Save fuel using carpool</li>
+      <li>💰 Save fuel via carpool</li>
     </ul>
     <button class="back" onclick="openScreen('home')">Back</button>
   </div>
@@ -218,14 +218,15 @@ function openScreen(id){
   document.getElementById(id).classList.add("active");
 }
 
-const HOST_PIN = "2356";
+/* CHANGE HOST PIN */
+const HOST_PIN = "1234";
 
+/* FIREBASE CONFIG (PUT YOUR REAL VALUES) */
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
   authDomain: "YOUR_PROJECT.firebaseapp.com",
   projectId: "YOUR_PROJECT"
 };
-
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
@@ -240,18 +241,28 @@ function addRoad(){
   });
   rb_loc.value=rb_type.value=rb_det.value="";
 }
-db.collection("roadblocks").onSnapshot(s=>{
+
+db.collection("roadblocks").onSnapshot(snapshot=>{
   roadList.innerHTML="";
-  s.forEach(d=>{
-    const r=d.data();
+  snapshot.forEach(doc=>{
+    const r=doc.data();
+    let t="Just now";
+    if(r.time && r.time.seconds){
+      t=new Date(r.time.seconds*1000).toLocaleString();
+    }
     roadList.innerHTML+=`
-      <li><b>${r.type}</b> @ ${r.location}<br>${r.details}</li>`;
+      <li>
+        🚧 <b>${r.type}</b><br>
+        📍 ${r.location}<br>
+        ${r.details || ""}<br>
+        <small>🕒 ${t}</small>
+      </li>`;
   });
 });
 
 /* HOST ADD RIDE */
 function addRide(){
-  if(host_pin.value !== HOST_PIN) return alert("Invalid Host PIN");
+  if(host_pin.value!==HOST_PIN) return alert("Invalid Host PIN");
   if(!cf.value||!ct.value||!ctm.value||!cs.value||!cc.value)
     return alert("Fill all fields");
   db.collection("carpool").add({
@@ -282,10 +293,10 @@ function joinRide(id){
 }
 
 /* LIVE RIDES */
-db.collection("carpool").onSnapshot(s=>{
+db.collection("carpool").onSnapshot(snapshot=>{
   rideList.innerHTML="";
-  s.forEach(d=>{
-    const r=d.data();
+  snapshot.forEach(doc=>{
+    const r=doc.data();
     let j="";
     r.joiners.forEach(x=>{
       j+=`<li>${x.name} (${x.phone}) – ${x.pickup}</li>`;
@@ -296,7 +307,7 @@ db.collection("carpool").onSnapshot(s=>{
         🕒 ${r.time} | Seats: ${r.seats}<br>
         📞 Host: ${r.contact}
         <ul>${j}</ul>
-        ${r.seats>0?`<button onclick="joinRide('${d.id}')">Join</button>`:`<small>❌ Full</small>`}
+        ${r.seats>0?`<button onclick="joinRide('${doc.id}')">Join</button>`:`<small>❌ Full</small>`}
       </li>`;
   });
 });
