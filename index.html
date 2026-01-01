@@ -268,11 +268,24 @@ function addRide(){
   cf.value=ct.value=ctm.value=cs.value=cc.value="";
 }
 
-function joinRide(id,seats){
-  if(seats<=0)return alert("No seats left");
-  db.collection("carpool").doc(id).update({seats:seats-1});
-}
+function joinRide(id){
+  const rideRef = db.collection("carpool").doc(id);
 
+  rideRef.get().then(doc => {
+    if (!doc.exists) return;
+
+    const seats = doc.data().seats;
+    if (seats <= 0) {
+      alert("No seats left");
+      return;
+    }
+
+    rideRef.update({
+      seats: seats - 1
+    });
+  });
+}
+  
 db.collection("carpool").onSnapshot(s=>{
   rideList.innerHTML="";
   s.forEach(d=>{
@@ -281,10 +294,14 @@ db.collection("carpool").onSnapshot(s=>{
     <li>🚗 ${r.from} ➝ ${r.to}<br>
     🕒 ${r.time} | Seats: ${r.seats}<br>
     📞 ${r.contact}
-    <button onclick="joinRide('${d.id}',${r.seats})">Join</button></li>`;
+   ${r.seats > 0 
+  ? `<button onclick="joinRide('${d.id}')">Join</button>` 
+  : `<small>❌ No seats left</small>`
+}</li>`;
   });
 });
 </script>
 
 </body>
 </html>
+
