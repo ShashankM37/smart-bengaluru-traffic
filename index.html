@@ -180,27 +180,6 @@ function openScreen(id){
   document.getElementById(id).classList.add("active");
 }
 
-/* ROADBLOCKS */
-function submitReport(){
-  if(!rb_loc.value || !rb_type.value){
-    alert("Enter location & issue type");
-    return;
-  }
-  let data=JSON.parse(localStorage.road||"[]");
-  data.push({loc:rb_loc.value,type:rb_type.value,det:rb_det.value,time:new Date().toLocaleString()});
-  localStorage.road=JSON.stringify(data);
-  rb_loc.value=rb_type.value=rb_det.value="";
-  showReports();
-}
-function showReports(){
-  let data=JSON.parse(localStorage.road||"[]");
-  rlist.innerHTML="";
-  data.forEach(d=>{
-    let li=document.createElement("li");
-    li.innerHTML=`<b>${d.type}</b> @ ${d.loc}<br>${d.det}<br><small>${d.time}</small>`;
-    rlist.appendChild(li);
-  });
-}
 
 /* CARPOOL */
 function addRide(){
@@ -329,16 +308,6 @@ window.onload=()=>{showReports();showRides();}
 <button onclick="submitReport()">Submit</button>
 <ul id="rlist"></ul>
 <button class="back" onclick="openScreen('home')">Back</button>
-</div>
-</div>
-  <!-- Roadblock input -->
-<input id="rb_loc" placeholder="Location (e.g. MG Road)">
-<input id="rb_type" placeholder="Type (Traffic / Accident)">
-<textarea id="rb_det" placeholder="Details"></textarea>
-<button onclick="submitReport()">Report</button>
-
-<!-- Roadblock list -->
-<ul id="rlist"></ul>
 
 <!-- CARPOOL -->
 <div id="carpool" class="screen">
@@ -381,10 +350,7 @@ window.onload=()=>{showReports();showRides();}
 </body>
 
 </html>
-<script>
-    status: "Firebase connected",
-    time: new Date().toString()
-  });
-</script>
+
+
 
 
