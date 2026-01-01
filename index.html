@@ -5,7 +5,7 @@
 <title>🚦 Smart Bengaluru – City Connect</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- Firebase SDK -->
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
@@ -13,7 +13,7 @@
 *{box-sizing:border-box}
 body{
   margin:0;
-  font-family:"Segoe UI",Arial,sans-serif;
+  font-family:"Segoe UI",sans-serif;
   background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
   color:white;
 }
@@ -43,7 +43,13 @@ header{
   border-radius:32px;
   padding:34px;
   text-align:center;
+  animation:pop .6s ease;
 }
+@keyframes pop{
+  from{transform:scale(.9);opacity:0}
+  to{transform:scale(1);opacity:1}
+}
+
 .grid{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -80,12 +86,14 @@ input,select,textarea{
   border:none;
   margin-bottom:10px;
 }
+
 iframe{
   width:100%;
   height:360px;
   border:none;
   border-radius:18px;
 }
+
 ul{padding-left:18px}
 li{margin-bottom:14px}
 small{opacity:.8}
@@ -103,7 +111,6 @@ a{color:#ffeb3b;font-weight:700;text-decoration:none}
     <h1>Beat Traffic Together</h1>
     <p>Real-time • Community • Smart City</p>
   </div>
-
   <div class="card">
     <div class="grid">
       <div class="tile" onclick="openScreen('map')">🗺️ Live Traffic</div>
@@ -131,7 +138,7 @@ a{color:#ffeb3b;font-weight:700;text-decoration:none}
     <h2>Report Roadblock</h2>
     <input id="rb_loc" placeholder="Location">
     <select id="rb_type">
-      <option value="">Issue Type</option>
+      <option value="">Issue</option>
       <option>Accident</option>
       <option>Traffic</option>
       <option>Construction</option>
@@ -182,7 +189,7 @@ a{color:#ffeb3b;font-weight:700;text-decoration:none}
     <h2>Student Mode</h2>
     <ul>
       <li>📚 Leave early for exams</li>
-      <li>🚇 Use metro & buses</li>
+      <li>🚇 Use public transport</li>
       <li>🚗 Share rides</li>
     </ul>
     <button class="back" onclick="openScreen('home')">Back</button>
@@ -196,7 +203,7 @@ a{color:#ffeb3b;font-weight:700;text-decoration:none}
     <ul>
       <li>⏰ Check traffic early</li>
       <li>🛣️ Use alternate routes</li>
-      <li>💰 Save fuel via carpool</li>
+      <li>💰 Save fuel</li>
     </ul>
     <button class="back" onclick="openScreen('home')">Back</button>
   </div>
@@ -205,13 +212,12 @@ a{color:#ffeb3b;font-weight:700;text-decoration:none}
 <!-- HELP -->
 <div id="help" class="screen">
   <div class="card">
-    <h2>Emergency Help</h2>
+    <h2>Emergency</h2>
     <a href="tel:112">📞 Call 112</a>
     <button class="back" onclick="openScreen('home')">Back</button>
   </div>
 </div>
 
-<!-- LOGIC -->
 <script>
 function openScreen(id){
   document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
@@ -219,14 +225,15 @@ function openScreen(id){
 }
 
 /* CHANGE HOST PIN */
-const HOST_PIN = "2356";
+const HOST_PIN = "8904";
 
-/* FIREBASE CONFIG (PUT YOUR REAL VALUES) */
+/* 🔥 PUT YOUR REAL FIREBASE CONFIG HERE */
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
   authDomain: "YOUR_PROJECT.firebaseapp.com",
   projectId: "YOUR_PROJECT"
 };
+
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
@@ -254,7 +261,7 @@ db.collection("roadblocks").onSnapshot(snapshot=>{
       <li>
         🚧 <b>${r.type}</b><br>
         📍 ${r.location}<br>
-        ${r.details || ""}<br>
+        ${r.details}<br>
         <small>🕒 ${t}</small>
       </li>`;
   });
@@ -265,6 +272,7 @@ function addRide(){
   if(host_pin.value!==HOST_PIN) return alert("Invalid Host PIN");
   if(!cf.value||!ct.value||!ctm.value||!cs.value||!cc.value)
     return alert("Fill all fields");
+
   db.collection("carpool").add({
     from:cf.value,to:ct.value,time:ctm.value,
     seats:Number(cs.value),
@@ -278,6 +286,7 @@ function addRide(){
 function joinRide(id){
   if(!jn_name.value||!jn_phone.value)
     return alert("Enter your details");
+
   const ref=db.collection("carpool").doc(id);
   ref.get().then(doc=>{
     const d=doc.data();
@@ -315,4 +324,3 @@ db.collection("carpool").onSnapshot(snapshot=>{
 
 </body>
 </html>
-
