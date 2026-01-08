@@ -1,42 +1,296 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Firebase Realtime Test</title>
+<meta charset="UTF-8">
+<title>🚦 Smart Bengaluru Traffic Connect</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root{
+  --glass: rgba(255,255,255,0.12);
+  --border: rgba(255,255,255,0.25);
+  --accent:#ff9800;
+  --bg: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  --text:#ffffff;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:system-ui, Arial, sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+
+/* Header */
+header{
+  text-align:center;
+  padding:18px;
+  font-size:22px;
+  font-weight:800;
+  backdrop-filter: blur(12px);
+  background: rgba(0,0,0,.4);
+  border-bottom:1px solid var(--border);
+}
+
+/* Screens */
+.screen{display:none;padding:18px;animation:fade .45s ease}
+.active{display:block}
+@keyframes fade{
+  from{opacity:0;transform:translateY(14px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* Glass cards */
+.card{
+  background:var(--glass);
+  border:1px solid var(--border);
+  backdrop-filter: blur(18px);
+  border-radius:20px;
+  padding:18px;
+  margin-bottom:16px;
+  box-shadow:0 20px 40px rgba(0,0,0,.35);
+}
+
+/* Hero */
+.hero{
+  text-align:center;
+  padding:34px;
+  border-radius:26px;
+  background:linear-gradient(135deg,rgba(255,255,255,.22),rgba(255,255,255,.06));
+}
+.hero h1{margin:6px 0;font-size:28px}
+.hero span{color:var(--accent)}
+.hero p{opacity:.9}
+
+.pulse{
+  display:inline-block;
+  margin-top:12px;
+  padding:8px 18px;
+  background:var(--accent);
+  color:#000;
+  font-weight:800;
+  border-radius:999px;
+  animation:pulse 1.6s infinite;
+}
+@keyframes pulse{
+  0%{box-shadow:0 0 0 0 rgba(255,152,0,.7)}
+  70%{box-shadow:0 0 0 18px rgba(255,152,0,0)}
+}
+
+/* Grid tiles */
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+.tile{
+  background:rgba(255,255,255,.16);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:22px;
+  text-align:center;
+  font-weight:700;
+  cursor:pointer;
+  transition:.25s;
+}
+.tile:hover{
+  transform:translateY(-6px) scale(1.02);
+  background:rgba(255,255,255,.26);
+}
+
+/* Inputs & buttons */
+input,select,textarea{
+  width:100%;
+  padding:12px;
+  margin-bottom:10px;
+  border-radius:12px;
+  border:none;
+  outline:none;
+  background:rgba(255,255,255,.16);
+  color:#fff;
+}
+option{color:#000}
+
+button{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:14px;
+  background:var(--accent);
+  color:#000;
+  font-weight:800;
+  margin-top:8px;
+  cursor:pointer;
+}
+.back{
+  background:rgba(255,255,255,.25);
+  color:#fff;
+}
+
+/* Map */
+iframe{
+  width:100%;
+  height:360px;
+  border:0;
+  border-radius:16px;
+}
+
+/* Links */
+a{color:var(--accent);font-weight:800;text-decoration:none}
+</style>
 </head>
+
 <body>
 
-  <h1>🔥 Firebase Realtime Database Test</h1>
-  <p>If this works, Firebase is connected.</p>
+<header>🚦 Smart Bengaluru Traffic Connect</header>
 
-  <!-- Firebase v8 SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+<!-- HOME -->
+<div id="home" class="screen active">
+  <div class="hero">
+    <h1>Move <span>Smart</span>. Beat <span>Traffic</span>.</h1>
+    <p>Live traffic • Citizen reports • Ride sharing</p>
+    <div class="pulse">SMART CITY MODE</div>
+  </div>
 
-  <script>
-    // ✅ YOUR Firebase config (converted correctly)
-    var firebaseConfig = {
-      apiKey: "AIzaSyBkLIK0mM6PVwqhWRyK2BMGgzmIlczu_JQ",
-      authDomain: "smart-traffic-app-a43a5.firebaseapp.com",
-      databaseURL: "https://smart-traffic-app-a43a5-default-rtdb.firebaseio.com",
-      projectId: "smart-traffic-app-a43a5",
-      storageBucket: "smart-traffic-app-a43a5.appspot.com",
-      messagingSenderId: "805640813198",
-      appId: "1:805640813198:web:c11ef60b71e32c509927df"
-    };
+  <div class="card">
+    <div class="grid">
+      <div class="tile" onclick="openScreen('live')">📍<br>Live Traffic</div>
+      <div class="tile" onclick="openScreen('traffic')">🚦<br>Traffic Status</div>
+      <div class="tile" onclick="openScreen('students')">🎓<br>Student Mode</div>
+      <div class="tile" onclick="openScreen('workers')">👷<br>Worker Mode</div>
+      <div class="tile" onclick="openScreen('road')">🚧<br>Roadblocks</div>
+      <div class="tile" onclick="openScreen('carpool')">🚗<br>Carpool</div>
+    </div>
+  </div>
 
-    // ✅ Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
+  <div class="card">
+    <button onclick="openScreen('solutions')">💡 Smart Solutions</button>
+    <button onclick="openScreen('help')">🆘 Emergency Help</button>
+  </div>
+</div>
 
-    // ✅ Get Realtime Database reference
-    var db = firebase.database();
+<!-- LIVE -->
+<div id="live" class="screen">
+  <div class="card">
+    <h2>Live Traffic</h2>
+    <iframe src="https://www.google.com/maps?q=bangalore&output=embed&layer=t"></iframe>
+    <button class="back" onclick="openScreen('home')">Back</button>
+  </div>
+</div>
 
-    // ✅ Test write (THIS IS IMPORTANT)
-    db.ref("test").set({
-      message: "Firebase connected successfully 🎉",
-      time: new Date().toString()
-    });
-  </script>
+<!-- TRAFFIC -->
+<div id="traffic" class="screen">
+  <div class="card">
+    <h2>Traffic Status</h2>
+    <ul>
+      <li>Low – Smooth flow</li>
+      <li>Medium – Delay</li>
+      <li>High – Congestion</li>
+    </ul>
+    <button class="back" onclick="openScreen('home')">Back</button>
+  </div>
+</div>
+
+<!-- STUDENTS -->
+<div id="students" class="screen">
+  <div class="card">
+    <h2>Student Mode</h2>
+    <ul>
+      <li>Travel early</li>
+      <li>Use public transport</li>
+      <li>Carpool with friends</li>
+    </ul>
+    <button class="back" onclick="openScreen('home')">Back</button>
+  </div>
+</div>
+
+<!-- WORKERS -->
+<div id="workers" class="screen">
+  <div class="card">
+    <h2>Worker Mode</h2>
+    <ul>
+      <li>Check traffic</li>
+      <li>Alternate routes</li>
+      <li>Save fuel using carpool</li>
+    </ul>
+    <button class="back" onclick="openScreen('home')">Back</button>
+  </div>
+</div>
+
+<!-- ROADBLOCKS (UI only for now) -->
+<div id="road" class="screen">
+  <div class="card">
+    <h2>Roadblocks</h2>
+    <input placeholder="Location">
+    <select>
+      <option>Accident</option>
+      <option>Roadblock</option>
+      <option>Construction</option>
+      <option>Heavy Traffic</option>
+    </select>
+    <textarea placeholder="Details"></textarea>
+    <button>Submit</button>
+    <button class="back" onclick="openScreen('home')">Back</button>
+  </div>
+</div>
+
+<!-- CARPOOL (UI only for now) -->
+<div id="carpool" class="screen">
+  <div class="card">
+    <h2>Carpooling</h2>
+    <p>Real-time logic will be added next.</p>
+    <button class="back" onclick="openScreen('home')">Back</button>
+  </div>
+</div>
+
+<!-- SOLUTIONS -->
+<div id="solutions" class="screen">
+  <div class="card">
+    <h2>Smart Solutions</h2>
+    <ul>
+      <li>Adaptive signals</li>
+      <li>Public transport</li>
+      <li>Ride sharing</li>
+      <li>WFH</li>
+    </ul>
+    <button class="back" onclick="openScreen('home')">Back</button>
+  </div>
+</div>
+
+<!-- HELP -->
+<div id="help" class="screen">
+  <div class="card">
+    <h2>Emergency</h2>
+    <a href="tel:112">📞 Call 112</a>
+    <button class="back" onclick="openScreen('home')">Back</button>
+  </div>
+</div>
+
+<!-- Navigation -->
+<script>
+function openScreen(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+</script>
+
+<!-- Firebase (initialized only; no writes) -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+<script>
+  var firebaseConfig = {
+    apiKey: "AIzaSyBkLIK0mM6PVwqhWRyK2BMGgzmIlczu_JQ",
+    authDomain: "smart-traffic-app-a43a5.firebaseapp.com",
+    databaseURL: "https://smart-traffic-app-a43a5-default-rtdb.firebaseio.com",
+    projectId: "smart-traffic-app-a43a5",
+    storageBucket: "smart-traffic-app-a43a5.appspot.com",
+    messagingSenderId: "805640813198",
+    appId: "1:805640813198:web:c11ef60b71e32c509927df"
+  };
+  firebase.initializeApp(firebaseConfig);
+  var db = firebase.database();
+</script>
 
 </body>
 </html>
