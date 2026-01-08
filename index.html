@@ -16,6 +16,29 @@
 }
 
 *{box-sizing:border-box}
+<!-- FIREBASE SDKs (COMPAT / v8) -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+<script>
+  
+  // ✅ Your Firebase configuration (correctly reused)
+  var firebaseConfig = {
+    apiKey: "AIzaSyDbnVtGrsCI9QtJLrQSwbkOmVp8ks3dXJM",
+    authDomain: "smart-traffic-app-22e4c.firebaseapp.com",
+    databaseURL: "https://smart-traffic-app-22e4c-default-rtdb.firebaseio.com",
+    projectId: "smart-traffic-app-22e4c",
+    storageBucket: "smart-traffic-app-22e4c.appspot.com",
+    messagingSenderId: "108676701950",
+    appId: "1:108676701950:web:8194d62dcff40a65108faf"
+  };
+
+  // ✅ Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+
+  // ✅ Realtime Database reference
+  var db = firebase.database();
+</script>
 
 body{
   margin:0;
@@ -301,3 +324,9 @@ function openScreen(id){
 
 </body>
 </html>
+<script>
+  db.ref("test").set({
+    status: "Firebase connected successfully",
+    time: new Date().toString()
+  });
+</script>
