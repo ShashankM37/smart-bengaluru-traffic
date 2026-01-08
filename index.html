@@ -1,33 +1,42 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Firebase Test</title>
+  <meta charset="UTF-8">
+  <title>Firebase Realtime Test</title>
 </head>
 <body>
-  <h1>Firebase Connection Test</h1>
 
-  <!-- Firebase v8 SDK -->
+  <h1>🔥 Firebase Realtime Database Test</h1>
+  <p>If this works, Firebase is connected.</p>
+
+  <!-- Firebase v8 SDKs -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
   <script>
+    // ✅ YOUR Firebase config (converted correctly)
     var firebaseConfig = {
-      apiKey: "PASTE_HERE",
-      authDomain: "PASTE_HERE",
-      databaseURL: "PASTE_HERE",
-      projectId: "PASTE_HERE",
-      storageBucket: "PASTE_HERE",
-      messagingSenderId: "PASTE_HERE",
-      appId: "PASTE_HERE"
+      apiKey: "AIzaSyBkLIK0mM6PVwqhWRyK2BMGgzmIlczu_JQ",
+      authDomain: "smart-traffic-app-a43a5.firebaseapp.com",
+      databaseURL: "https://smart-traffic-app-a43a5-default-rtdb.firebaseio.com",
+      projectId: "smart-traffic-app-a43a5",
+      storageBucket: "smart-traffic-app-a43a5.appspot.com",
+      messagingSenderId: "805640813198",
+      appId: "1:805640813198:web:c11ef60b71e32c509927df"
     };
 
+    // ✅ Initialize Firebase
     firebase.initializeApp(firebaseConfig);
+
+    // ✅ Get Realtime Database reference
     var db = firebase.database();
 
+    // ✅ Test write (THIS IS IMPORTANT)
     db.ref("test").set({
-      message: "Firebase connected successfully",
+      message: "Firebase connected successfully 🎉",
       time: new Date().toString()
     });
   </script>
+
 </body>
 </html>
