@@ -362,6 +362,12 @@ function unlockHost(){
   if(pin === "89043"){
     isHost = true;
     alert("Host mode enabled");
+
+    // 🔄 Force UI refresh
+    db.ref("rides").once("value", snap=>{
+      snap.forEach(()=>{}); // triggers listener
+    });
+
   }else{
     alert("Wrong PIN");
   }
@@ -431,5 +437,6 @@ rideList.innerHTML += `
   }
 });
 </script>
+
 
 
