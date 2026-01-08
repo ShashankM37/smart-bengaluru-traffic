@@ -2,65 +2,90 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Smart Bengaluru Traffic</title>
+<title>🚦 Smart Bengaluru Traffic Connect</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
 <style>
 :root{
-  --primary:#1a237e;
-  --accent:#ff6f00;
+  --p:#1a237e;
+  --a:#ff6f00;
+  --bg:#eef2ff;
+  --card:#ffffff;
+  --text:#000;
 }
+.dark{
+  --bg:#0f172a;
+  --card:#1e293b;
+  --text:#fff;
+}
+
 *{box-sizing:border-box}
 body{
   margin:0;
-  font-family:system-ui,Arial;
-  background:linear-gradient(180deg,#eef2ff,#ffffff);
+  font-family:system-ui, Arial, sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  transition:.4s;
 }
+
+/* HEADER */
 header{
   background:linear-gradient(90deg,#1a237e,#3949ab);
-  color:#fff;
+  color:white;
   padding:16px;
   text-align:center;
   font-size:22px;
-  font-weight:700;
+  font-weight:800;
+  position:sticky;
+  top:0;
+  z-index:10;
 }
-.screen{display:none;padding:16px}
+
+/* SCREENS */
+.screen{display:none;padding:16px;animation:fade .4s}
 .active{display:block}
-.card{
-  background:#fff;
-  padding:16px;
-  border-radius:18px;
-  box-shadow:0 12px 30px rgba(0,0,0,.15);
-  margin-bottom:14px;
-  animation:fade .5s ease;
-}
 @keyframes fade{
   from{opacity:0;transform:translateY(10px)}
-  to{opacity:1;transform:none}
+  to{opacity:1;transform:translateY(0)}
 }
+
+.card{
+  background:var(--card);
+  padding:18px;
+  margin-bottom:14px;
+  border-radius:18px;
+  box-shadow:0 10px 25px rgba(0,0,0,.2);
+}
+
+/* HERO */
 .hero{
   background:linear-gradient(135deg,#1a237e,#5c6bc0);
-  color:#fff;
-  padding:30px;
-  border-radius:24px;
+  color:white;
+  padding:34px;
+  border-radius:26px;
   text-align:center;
+  box-shadow:0 0 30px rgba(92,107,192,.7);
+}
+.hero h1{
+  font-size:28px;
+  margin:10px 0;
 }
 .hero span{
-  display:inline-block;
-  margin-top:12px;
-  padding:8px 18px;
-  background:#ff6f00;
-  border-radius:999px;
-  animation:pulse 2s infinite;
+  color:#ffcc80;
 }
-@keyframes pulse{
-  0%{box-shadow:0 0 0 0 rgba(255,111,0,.6)}
-  70%{box-shadow:0 0 0 18px rgba(255,111,0,0)}
+
+/* COUNTERS */
+.stats{
+  display:flex;
+  justify-content:space-around;
+  margin-top:14px;
 }
+.stat{
+  text-align:center;
+}
+.stat h2{margin:0;color:#ffcc80}
+
+/* GRID */
 .grid{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -68,208 +93,187 @@ header{
 }
 .tile{
   background:linear-gradient(135deg,#303f9f,#7986cb);
-  color:#fff;
+  color:white;
   padding:22px;
   border-radius:20px;
   text-align:center;
-  font-weight:600;
+  font-weight:700;
+  min-height:110px;
   cursor:pointer;
+  transition:.25s;
 }
+.tile:hover{
+  transform:scale(1.05);
+  box-shadow:0 0 20px rgba(121,134,203,.9);
+}
+
+/* BUTTONS */
 button{
   width:100%;
   padding:14px;
+  margin-top:10px;
   border:none;
   border-radius:14px;
   background:#303f9f;
-  color:#fff;
+  color:white;
   font-size:16px;
+  font-weight:600;
 }
-.back{background:#555}
+.back{background:#444}
+.toggle{
+  background:#ff6f00;
+}
+
+/* FORM */
 input,select,textarea{
   width:100%;
-  padding:10px;
-  margin-bottom:8px;
-  border-radius:10px;
-  border:1px solid #ccc;
+  padding:12px;
+  margin-bottom:10px;
+  border-radius:12px;
+  border:none;
 }
+
+/* MAP */
 iframe{
   width:100%;
   height:360px;
-  border-radius:16px;
-  border:none;
+  border:0;
+  border-radius:18px;
 }
-ul{padding-left:16px}
+
+a{
+  display:block;
+  margin-top:10px;
+  color:#ff6f00;
+  font-size:20px;
+  text-decoration:none;
+}
 </style>
+
+<script>
+function openScreen(id){
+  clickSound();
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+/* DARK MODE */
+function toggleDark(){
+  document.body.classList.toggle("dark");
+}
+
+/* SOUND */
+function clickSound(){
+  let a=new Audio("https://www.soundjay.com/buttons/sounds/button-29.mp3");
+  a.play();
+}
+
+/* COUNTER ANIMATION */
+function animate(id,max){
+  let n=0;
+  let el=document.getElementById(id);
+  let i=setInterval(()=>{
+    n++;
+    el.innerText=n;
+    if(n>=max)clearInterval(i);
+  },40);
+}
+
+window.onload=()=>{
+  animate("c1",128);
+  animate("c2",56);
+  animate("c3",24);
+}
+</script>
 </head>
 
 <body>
 
-<header>🚦 Smart Bengaluru Traffic</header>
+<header>
+🚦 Smart Bengaluru Traffic Connect  
+<button class="toggle" onclick="toggleDark()">🌙 Toggle Mode</button>
+</header>
 
 <!-- HOME -->
 <div id="home" class="screen active">
   <div class="hero">
-    <h1>Move Smart. Beat Traffic.</h1>
-    <p>Citizen-powered live traffic & carpooling</p>
-    <span>SMART CITY MODE</span>
+    <h1>Move <span>Smart</span>. Beat <span>Traffic</span>.</h1>
+    <p>India’s next-gen citizen traffic platform</p>
+
+    <div class="stats">
+      <div class="stat">
+        <h2 id="c1">0</h2>
+        <small>Live Reports</small>
+      </div>
+      <div class="stat">
+        <h2 id="c2">0</h2>
+        <small>Carpools</small>
+      </div>
+      <div class="stat">
+        <h2 id="c3">0</h2>
+        <small>Alerts</small>
+      </div>
+    </div>
   </div>
 
   <div class="card">
     <div class="grid">
-      <div class="tile" onclick="openScreen('map')">🗺 Live Map</div>
-      <div class="tile" onclick="openScreen('road')">🚧 Roadblocks</div>
-      <div class="tile" onclick="openScreen('carpool')">🚗 Carpool</div>
-      <div class="tile" onclick="openScreen('students')">🎓 Students</div>
-      <div class="tile" onclick="openScreen('workers')">👷 Workers</div>
-      <div class="tile" onclick="openScreen('help')">🆘 Emergency</div>
+      <div class="tile" onclick="openScreen('live')">📍<br>Live Traffic</div>
+      <div class="tile" onclick="openScreen('road')">🚧<br>Roadblocks</div>
+      <div class="tile" onclick="openScreen('carpool')">🚗<br>Carpool</div>
+      <div class="tile" onclick="openScreen('help')">🆘<br>Emergency</div>
     </div>
   </div>
 </div>
 
-<!-- MAP -->
-<div id="map" class="screen">
+<!-- LIVE -->
+<div id="live" class="screen">
 <div class="card">
-<h2>Live Traffic Map</h2>
+<h2>🗺️ Live Traffic Map</h2>
 <iframe src="https://www.google.com/maps?q=bangalore&output=embed&layer=t"></iframe>
-<button class="back" onclick="openScreen('home')">Back</button>
+<button class="back" onclick="openScreen('home')">⬅ Back</button>
 </div>
 </div>
 
 <!-- ROADBLOCK -->
 <div id="road" class="screen">
 <div class="card">
-<h2>Report Roadblock</h2>
-<input id="rb_loc" placeholder="Location">
-<select id="rb_type">
-<option value="">Issue</option>
+<h2>🚧 Report Road Issue</h2>
+<input placeholder="Location">
+<select>
 <option>Accident</option>
 <option>Roadblock</option>
 <option>Construction</option>
 <option>Heavy Traffic</option>
 </select>
-<textarea id="rb_det" placeholder="Details"></textarea>
-<button onclick="submitRoadblock()">Submit</button>
-<ul id="rlist"></ul>
-<button class="back" onclick="openScreen('home')">Back</button>
+<textarea placeholder="Details"></textarea>
+<button>Submit Report</button>
+<button class="back" onclick="openScreen('home')">⬅ Back</button>
 </div>
 </div>
 
 <!-- CARPOOL -->
 <div id="carpool" class="screen">
 <div class="card">
-<h2>Host Add Ride</h2>
-<input id="host_pin" placeholder="Host PIN">
-<input id="cf" placeholder="From">
-<input id="ct" placeholder="To">
-<input id="ctm" placeholder="Time">
-<input id="cs" type="number" placeholder="Seats">
-<input id="cc" placeholder="Host Contact">
-<button onclick="addRide()">Add Ride</button>
-</div>
-
-<div class="card">
-<h2>Available Rides</h2>
-<ul id="rideList"></ul>
-<button class="back" onclick="openScreen('home')">Back</button>
-</div>
-</div>
-
-<!-- STUDENTS -->
-<div id="students" class="screen">
-<div class="card">
-<h2>Student Tips</h2>
-<ul>
-<li>Travel early</li>
-<li>Use Metro</li>
-<li>Share rides</li>
-</ul>
-<button class="back" onclick="openScreen('home')">Back</button>
-</div>
-</div>
-
-<!-- WORKERS -->
-<div id="workers" class="screen">
-<div class="card">
-<h2>Worker Tips</h2>
-<ul>
-<li>WFH when possible</li>
-<li>Avoid peak hours</li>
-<li>Use carpool</li>
-</ul>
-<button class="back" onclick="openScreen('home')">Back</button>
+<h2>🚗 Carpool Together</h2>
+<input placeholder="From">
+<input placeholder="To">
+<input placeholder="Time">
+<input type="number" placeholder="Seats">
+<input placeholder="Contact">
+<button>Add Ride</button>
+<button class="back" onclick="openScreen('home')">⬅ Back</button>
 </div>
 </div>
 
 <!-- HELP -->
 <div id="help" class="screen">
 <div class="card">
-<h2>Emergency</h2>
+<h2>🆘 Emergency Help</h2>
 <a href="tel:112">📞 Call 112</a>
-<button class="back" onclick="openScreen('home')">Back</button>
+<button class="back" onclick="openScreen('home')">⬅ Back</button>
 </div>
 </div>
-
-<script>
-function openScreen(id){
-  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
-}
-
-// 🔥 FIREBASE CONFIG (replace with yours)
-firebase.initializeApp({
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID"
-});
-const db = firebase.firestore();
-
-/* ROADBLOCKS */
-function submitRoadblock(){
-  db.collection("roadblocks").add({
-    location: rb_loc.value,
-    type: rb_type.value,
-    details: rb_det.value,
-    time: new Date().toLocaleString()
-  });
-}
-
-db.collection("roadblocks").onSnapshot(snap=>{
-  rlist.innerHTML="";
-  snap.forEach(doc=>{
-    const d=doc.data();
-    rlist.innerHTML+=`<li><b>${d.type}</b> @ ${d.location}<br>${d.details}<br><small>${d.time}</small></li>`;
-  });
-});
-
-/* CARPOOL */
-function addRide(){
-  if(host_pin.value!=="1234"){alert("Invalid PIN");return;}
-  db.collection("carpool").add({
-    from:cf.value,to:ct.value,time:ctm.value,
-    seats:+cs.value,host:cc.value,joiners:[]
-  });
-}
-
-function joinRide(id,seats,joiners){
-  if(seats<=0)return alert("No seats");
-  const name=prompt("Name"),phone=prompt("Phone"),pickup=prompt("Pickup");
-  db.collection("carpool").doc(id).update({
-    seats:seats-1,
-    joiners:[...joiners,{name,phone,pickup}]
-  });
-}
-
-db.collection("carpool").onSnapshot(snap=>{
-  rideList.innerHTML="";
-  snap.forEach(doc=>{
-    const r=doc.data();
-    rideList.innerHTML+=`
-    <li><b>${r.from} ➝ ${r.to}</b><br>
-    Time:${r.time}<br>Seats:${r.seats}<br>
-    <button onclick="joinRide('${doc.id}',${r.seats},${JSON.stringify(r.joiners)})">Join</button></li>`;
-  });
-});
-</script>
 
 </body>
 </html>
