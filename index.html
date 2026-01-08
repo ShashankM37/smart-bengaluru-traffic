@@ -218,28 +218,50 @@ a{color:var(--accent);font-weight:800;text-decoration:none}
   </div>
 </div>
 
-<!-- ROADBLOCKS (UI only for now) -->
+<!-- ROADBLOCKS -->
 <div id="road" class="screen">
   <div class="card">
-    <h2>Roadblocks</h2>
-    <input placeholder="Location">
-    <select>
+    <h2>🚧 Report Roadblock</h2>
+    <input id="rbLocation" placeholder="Location">
+    <select id="rbType">
+      <option value="">Select Issue</option>
       <option>Accident</option>
       <option>Roadblock</option>
       <option>Construction</option>
       <option>Heavy Traffic</option>
     </select>
-    <textarea placeholder="Details"></textarea>
-    <button>Submit</button>
+    <textarea id="rbDetails" placeholder="Details"></textarea>
+    <button onclick="submitRoadblock()">Submit Report</button>
+  </div>
+
+  <div class="card">
+    <h2>📢 Live Roadblock Reports</h2>
+    <ul id="roadList"></ul>
     <button class="back" onclick="openScreen('home')">Back</button>
   </div>
 </div>
 
-<!-- CARPOOL (UI only for now) -->
+<!-- CARPOOL -->
 <div id="carpool" class="screen">
   <div class="card">
-    <h2>Carpooling</h2>
-    <p>Real-time logic will be added next.</p>
+    <h2>🔐 Host Access</h2>
+    <input id="hostPin" placeholder="Enter Host PIN">
+    <button onclick="unlockHost()">Unlock Host Mode</button>
+  </div>
+
+  <div class="card">
+    <h2>Add Ride (Host Only)</h2>
+    <input id="from" placeholder="From">
+    <input id="to" placeholder="To">
+    <input id="time" placeholder="Time">
+    <input id="seats" type="number" placeholder="Seats">
+    <input id="contact" placeholder="Host Contact">
+    <button onclick="addRide()">Add Ride</button>
+  </div>
+
+  <div class="card">
+    <h2>Available Rides</h2>
+    <ul id="rideList"></ul>
     <button class="back" onclick="openScreen('home')">Back</button>
   </div>
 </div>
@@ -291,6 +313,110 @@ function openScreen(id){
   firebase.initializeApp(firebaseConfig);
   var db = firebase.database();
 </script>
+<script>
+function submitRoadblock(){
+  const location = document.getElementById("rbLocation").value;
+  const type = document.getElementById("rbType").value;
+  const details = document.getElementById("rbDetails").value;
 
-</body>
-</html>
+  if(!location || !type){
+    alert("Please fill location and issue type");
+    return;
+  }
+
+  db.ref("roadblocks").push({
+    location,
+    type,
+    details,
+    time: new Date().toLocaleString()
+  });
+
+  document.getElementById("rbLocation").value = "";
+  document.getElementById("rbType").value = "";
+  document.getElementById("rbDetails").value = "";
+}
+
+db.ref("roadblocks").on("value", snapshot=>{
+  const roadList = document.getElementById("roadList");
+  roadList.innerHTML = "";
+  const data = snapshot.val();
+  if(!data) return;
+
+  for(let id in data){
+    const r = data[id];
+    roadList.innerHTML += `
+      <li>
+        <b>${r.type}</b> at <b>${r.location}</b><br>
+        ${r.details || ""}<br>
+        <small>${r.time}</small>
+      </li>
+    `;
+  }
+});
+</script>
+<script>
+let isHost = false;
+
+function unlockHost(){
+  const pin = document.getElementById("hostPin").value;
+  if(pin === "89043"){
+    isHost = true;
+    alert("Host mode enabled");
+  }else{
+    alert("Wrong PIN");
+  }
+}
+
+function addRide(){
+  if(!isHost){
+    alert("Only host can add rides");
+    return;
+  }
+
+  const ride = {
+    from: document.getElementById("from").value,
+    to: document.getElementById("to").value,
+    time: document.getElementById("time").value,
+    seats: parseInt(document.getElementById("seats").value),
+    contact: document.getElementById("contact").value,
+    users: {}
+  };
+
+  db.ref("rides").push(ride);
+
+  document.getElementById("from").value = "";
+  document.getElementById("to").value = "";
+  document.getElementById("time").value = "";
+  document.getElementById("seats").value = "";
+  document.getElementById("contact").value = "";
+}
+
+function joinRide(id){
+  const name = prompt("Enter your name");
+  const phone = prompt("Enter your phone number");
+  if(!name || !phone) return;
+
+  db.ref("rides/" + id + "/users").push({ name, phone });
+  db.ref("rides/" + id + "/seats").transaction(s => s - 1);
+}
+
+db.ref("rides").on("value", snapshot=>{
+  const rideList = document.getElementById("rideList");
+  rideList.innerHTML = "";
+  const data = snapshot.val();
+  if(!data) return;
+
+  for(let id in data){
+    const r = data[id];
+    rideList.innerHTML += `
+      <li>
+        <b>${r.from} ➝ ${r.to}</b><br>
+        Time: ${r.time}<br>
+        Seats left: ${r.seats}<br>
+        Contact: ${r.contact}<br>
+        <button onclick="joinRide('${id}')">Join Ride</button>
+      </li>
+    `;
+  }
+});
+</script>
